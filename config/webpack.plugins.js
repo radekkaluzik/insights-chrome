@@ -43,7 +43,7 @@ const plugins = [
   ChunkMapper,
   new HtmlWebpackPlugin({
     template: path.resolve(__dirname, '../src/pug/templates/index.pug'),
-    inject: true,
+    inject: 'body',
     filename: '../index.html',
   }),
 ];
