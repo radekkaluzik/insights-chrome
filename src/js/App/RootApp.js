@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, Fragment } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect, shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -13,12 +13,19 @@ import { isBeta } from '../utils';
 import LandingNav from './Sidenav/LandingNav';
 import isEqual from 'lodash/isEqual';
 import { onToggle } from '../redux/actions';
+<<<<<<< HEAD
 import LoadingFallback from '../utils/loading-fallback';
 import checkSubAppExceptionModule from '../utils/modulesExceptions';
 
 const isModule = (key, chrome) =>
   key === (chrome?.activeSection?.id || chrome?.activeLocation) ||
   (key !== undefined && chrome?.activeSection?.group !== undefined && key === chrome?.activeSection?.group);
+=======
+import Routes from './Routes';
+import useOuiaTags from '../utils/useOuiaTags';
+import Banner from './Banners/Banner';
+import cookie from 'js-cookie';
+>>>>>>> 998f6a6...  add banner to tell everyone we are moving (#1516)
 
 const ShieldedRoot = memo(
   ({ useLandingNav, hideNav, insightsContentRef, isGlobalFilterEnabled, initialized, remoteModule, appId }) => {
@@ -33,14 +40,18 @@ const ShieldedRoot = memo(
     return (
       <Page
         isManagedSidebar={!hideNav}
+        className={classnames({ 'ins-c-page__hasBanner': useLandingNav && !cookie.get('cs_jwt') })}
         header={
-          <PageHeader
-            className={classnames({ 'context-switcher-banner': isOpen })}
-            logoComponent="div"
-            logo={<Header />}
-            showNavToggle={!hideNav}
-            headerTools={<HeaderTools />}
-          />
+          <Fragment>
+            {useLandingNav && !cookie.get('cs_jwt') ? <Banner /> : undefined}
+            <PageHeader
+              className={classnames({ 'context-switcher-banner': isOpen })}
+              logoComponent="div"
+              logo={<Header />}
+              showNavToggle={!hideNav}
+              headerTools={<HeaderTools />}
+            />
+          </Fragment>
         }
         sidebar={hideNav ? undefined : <PageSidebar id="ins-c-sidebar" nav={useLandingNav ? <LandingNav /> : <SideNav key="side-nav" />} />}
       >
