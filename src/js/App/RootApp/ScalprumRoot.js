@@ -98,6 +98,7 @@ const ScalprumRoot = ({ config, ...props }) => {
               toggle: setActiveQuickStartID,
               Catalog: LazyQuickStartCatalog,
             },
+            chromeHistory: history,
           },
         }}
       >
