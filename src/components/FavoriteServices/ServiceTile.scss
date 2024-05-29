@@ -1,0 +1,15 @@
+.chr-c-favorite-service {
+  &__tile {
+    &:hover {
+      text-decoration: none
+    }
+  }
+}
+.chr-c-favoritedservices {
+  .chr-l-stack__item-centered, .chr-c-card-centered {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+}
+

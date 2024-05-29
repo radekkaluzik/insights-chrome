@@ -1,3 +1,6 @@
+import { TextDecoder, TextEncoder } from 'util';
+import 'whatwg-fetch';
+
 global.SVGPathElement = function () {};
 
 global.MutationObserver = class {
@@ -6,8 +9,12 @@ global.MutationObserver = class {
   observe(element, initObject) {}
 };
 
-global.fetch = require('jest-fetch-mock');
 global.window = Object.create(window);
+
+Object.defineProperty(global.window.document, 'cookie', {
+  writable: true,
+  value: '',
+});
 
 global.window.insights = {
   ...(window.insights || {}),
@@ -28,6 +35,7 @@ global.window.insights = {
               // eslint-disable-next-line camelcase
               account_number: '0',
               type: 'User',
+              org_id: '123',
             },
             entitlements: {
               insights: {
@@ -43,3 +51,7 @@ global.window.insights = {
     getBundle: () => '',
   },
 };
+
+// Required for React 18 but not provided by jsdom env. See: https://github.com/jsdom/jsdom/issues/2524
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
