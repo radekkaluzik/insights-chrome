@@ -1,0 +1,40 @@
+.chr-viewing-as {
+  left: 0;
+  top: 76px;
+  width: 100%;
+  padding: 2px 0 2px 20px;
+  font-size: 10px;
+  background-color: var(--pf-v5-global--palette--blue-200);
+  color: var(--pf-v5-global--Color--100);
+  opacity: 1;
+  grid-area: banner;
+}
+
+.pf-v5-c-page.chr-c-page__account-banner {
+  grid-template-areas:
+    "header header"
+    "banner banner"
+    "nav main";
+  grid-template-rows: max-content max-content 1fr;
+}
+
+@media screen and (max-width: 1200px) {
+  .pf-v5-c-page.chr-c-page__account-banner {
+    grid-template-areas:
+      "header header"
+      "main main";
+  }
+}
+
+.chr-scope__default-layout {
+  flex-grow: 1;
+  display: inherit;
+  flex-direction: inherit;
+}
+
+.pf-v5-c-page__drawer {
+  .pf-v5-c-drawer__content {
+    background-color: transparent;
+  }
+}
+
