@@ -1,5 +1,6 @@
 build/
 node_modules/
+public/
 
 #emacs
 *[#]*[#]
@@ -21,3 +22,22 @@ Session.vim
 .idea/
 .vscode/
 coverage/
+.nyc_output
+cypress-coverage
+.yalc
+yalc.lock
+
+# cypress diff snapshots
+cypress/**/*.diff.png
+cypress/videos
+cypress/screenshots
+
+# cache
+.cache
+.webpack-cache
+.cypress-cache
+.sass-cache
+
+#swc
+.swc
+.cypress_cache
