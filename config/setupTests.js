@@ -1,13 +1,50 @@
+import { TextDecoder, TextEncoder } from 'util';
+import 'whatwg-fetch';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const crypto = require('crypto');
+
 global.SVGPathElement = function () {};
 
-global.MutationObserver = class {
-  constructor(callback) {}
-  disconnect() {}
-  observe(element, initObject) {}
+class ObserverShim {
+  observe() {
+    void 0;
+  }
+
+  disconnect() {
+    void 0;
+  }
+}
+
+global.ErrorEvent ??= Event;
+global.IntersectionObserver ??= ObserverShim;
+global.MutationObserver ??= ObserverShim;
+global.matchMedia = () => new EventTarget();
+global.getComputedStyle ??= function () {
+  return {
+    getPropertyPriority() {
+      return '';
+    },
+    getPropertyValue() {
+      return '';
+    },
+  };
 };
 
-global.fetch = require('jest-fetch-mock');
 global.window = Object.create(window);
+
+Object.defineProperty(global.window.document, 'cookie', {
+  writable: true,
+  value: '',
+});
+
+// Crypto object polyfill for JSDOM
+global.window.crypto = {
+  ...crypto,
+};
+// in case the crypto package is mangled or the method does not exist
+if (!global.window.crypto.randomUUID) {
+  global.window.crypto.randomUUID = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
 
 global.window.insights = {
   ...(window.insights || {}),
@@ -28,6 +65,7 @@ global.window.insights = {
               // eslint-disable-next-line camelcase
               account_number: '0',
               type: 'User',
+              org_id: '123',
             },
             entitlements: {
               insights: {
@@ -43,3 +81,7 @@ global.window.insights = {
     getBundle: () => '',
   },
 };
+
+// Required for React 18 but not provided by jsdom env. See: https://github.com/jsdom/jsdom/issues/2524
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
