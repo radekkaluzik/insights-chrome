@@ -1,0 +1,105 @@
+@import '~@patternfly/patternfly/patternfly-addons.scss';
+@import '~@patternfly/patternfly/sass-utilities/scss-variables';
+
+$cards: 0, 1, 2, 3;
+
+.chr-c-product-card {
+  &__link {
+    white-space: nowrap;
+  }
+
+  &__title {
+    background-color: var(--pf-t--global--background--color--100);
+    border-top: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+    border-left: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+    border-right: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+    padding: var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--lg);
+    @each $card in $cards {
+      &.title-#{$card} {
+        grid-column: $card + 1;
+        grid-row: 1;
+      }
+    }
+    @media only screen and (max-width: $pf-v6-global--breakpoint--xl) {
+      @each $card in $cards {
+        &.title-#{$card} {
+          @if $card > 1 {
+            margin-top: var(--pf-t--global--spacer--lg);
+            grid-column: $card - 1;
+            grid-row: 4;
+          }
+        }
+      }
+    }
+    @media only screen and (max-width: $pf-v6-global--breakpoint--md) {
+      @each $card in $cards {
+        &.title-#{$card} {
+            margin-top: var(--pf-t--global--spacer--lg);
+            grid-column: 1;
+            grid-row: ($card * 3) + 1;
+        }
+      }
+    }
+  }
+
+  &__body {
+    background-color: var(--pf-t--global--background--color--100);
+    border-left: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+    border-right: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+    padding: 0 var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--lg);
+    @each $card in $cards {
+      &.body-#{$card} {
+        grid-column: $card + 1;
+        grid-row: 2;
+      }
+    }
+    @media only screen and (max-width: $pf-v6-global--breakpoint--xl) {
+      @each $card in $cards {
+        &.body-#{$card} {
+          @if $card > 1 {
+            grid-column: $card - 1;
+            grid-row: 5;
+          }
+        }
+      }
+    }
+    @media only screen and (max-width: $pf-v6-global--breakpoint--md) {
+      @each $card in $cards {
+        &.body-#{$card} {
+            grid-column: 1;
+            grid-row: ($card * 3) + 2;
+        }
+      }
+    }
+  }
+  &__footer {
+    background-color: var(--pf-t--global--background--color--100);
+    border: var(--pf-t--global--border--width--regular) solid var(--pf-t--global--border--color--default);
+    border-top: none;
+    padding: 0 var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--lg);
+    @each $card in $cards {
+      &.footer-#{$card} {
+        grid-column: $card + 1;
+        grid-row: 3;
+      }
+    }
+    @media only screen and (max-width: $pf-v6-global--breakpoint--xl) {
+      @each $card in $cards {
+        &.footer-#{$card} {
+          @if $card > 1 {
+            grid-column: $card - 1;
+            grid-row: 6;
+          }
+        }
+      }
+    }
+    @media only screen and (max-width: $pf-v6-global--breakpoint--md) {
+      @each $card in $cards {
+        &.footer-#{$card} {
+            grid-column: 1;
+            grid-row: ($card * 3) + 3;
+        }
+      }
+    }
+  }
+}

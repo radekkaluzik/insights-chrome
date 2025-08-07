@@ -1,0 +1,10 @@
+.chr-c-search {
+  &__item {
+    &__description {
+      mark {
+        font-weight: var(--pf-t--global--font--weight--body--bold);
+        background-color: transparent;
+      }
+    }
+  }
+}

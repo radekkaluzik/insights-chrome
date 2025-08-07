@@ -1,234 +1,215 @@
-$pf-global--enable-reset: 'true';
-$pf-global--image-path: './assets/images/';
+$pf-v6-global--enable-reset: 'true';
 
-@import '~@patternfly/patternfly/patternfly-base.scss';
-
-// Components
-@import '~@patternfly/patternfly/components/Toolbar/toolbar.scss';
-@import '~@patternfly/patternfly/components/Page/page.scss';
-@import '~@patternfly/patternfly/components/BackgroundImage/background-image.scss';
-@import '~@patternfly/patternfly/components/Nav/nav.scss';
-@import '~@patternfly/patternfly/components/Button/button.scss';
-@import '~@patternfly/patternfly/components/Dropdown/dropdown.scss';
-@import '~@patternfly/patternfly/components/Avatar/avatar.scss';
-@import '~@patternfly/patternfly/components/Title/title.scss';
-@import '~@patternfly/patternfly/components/AboutModalBox/about-modal-box.scss';
-@import '~@patternfly/patternfly/components/ModalBox/modal-box.scss';
-@import '~@patternfly/patternfly/components/Backdrop/backdrop.scss';
-@import '~@patternfly/patternfly/components/Switch/switch.scss';
-@import '~@patternfly/patternfly/components/Alert/alert.scss';
-
-// Layouts
-@import '~@patternfly/patternfly/layouts/Split/split.scss';
-@import '~@patternfly/patternfly/layouts/Flex/flex.scss';
-@import '~@patternfly/patternfly/layouts/Bullseye/bullseye.scss';
-
-// Accessibility
-@import '~@patternfly/patternfly/utilities/Accessibility/accessibility.scss';
-@import '~@patternfly/patternfly/utilities/Spacing/spacing.scss';
+@import '~@patternfly/patternfly/sass-utilities/_index';
 @import '~@redhat-cloud-services/frontend-components/FilterHooks/tagFilterHook.scss';
 
-@import 'helpers.scss';
-
-@import 'partials/_footer.scss';
+// TODO: Bring these quick starts overrides into the lib instead 
+.pfext-page-layout__title {
+  margin-top: 0;
+  padding-top: 23px;
+}
+.pfext-page-layout__content.pfext-is-dark {
+  background: unset;
+}
 
 body {
-    position: relative;
+  position: relative;
 }
 
 aside {
-    overflow: auto !important;
+  overflow: auto !important;
 }
 
-.pf-c-page.ins-c-page__hasBanner {
+.quickstarts-open ._pendo-badge {
+  display:none !important;
+} 
+
+#chrome-app-render-root {
+  height: 100vh;
+}
+
+.pf-v6-c-page.chr-c-page {
+  .pf-v6-c-page__sidebar {
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: var(--pf-t--global--border--color--on-secondary);
+  }
+  &__hasBanner {
     grid-template-areas: "banner banner"
                          "header header"
                          "nav main";
+  }
 }
 
-.ins-c-header-link {
-    display: flex;
-}
-
-#no-access.pf-c-page__main {
+#no-access.pf-v6-c-page__main {
     display: none;
 }
 
-.pf-c-page__header-tools[widget-type="InsightsToolbar"] {
-    .pf-l-toolbar, .pf-c-toolbar, .pf-l-toolbar__group, .pf-c-toolbar__group {
-        display: flex;
-    }
-}
-
 // Page temp styles
-.pf-c-page {
-    --pf-c-page__sidebar--Transition: all 500ms cubic-bezier(.42, 0, .58, 1);
-    --pf-m-emphasis--FontSize: var(--pf-global--FontSize--xl);
-
-    .ins-m-full--height { height: 100%; }
-
-    .ins-c-chrome__global-filter {
-        padding: var(--pf-global--spacer--md) var(--pf-global--spacer--lg);
-        background: var(--pf-global--BackgroundColor--100);
-
-        .pf-c-chip-group { margin-right: var(--pf-global--spacer--xs); }
-        .ins-m-sticky { background: var(--pf-global--palette--blue-50); }
-        .ins-m-permanent button { display: none; }
-        .pf-l-split__item:first-of-type { min-width: 150px;}
-
-        .ins-c-tagfilter {
-            width: 100%;
-
-            &.pf-m-expanded { width: 450px; }
-            .pf-c-select__menu {
-                max-height: 400px;
-                overflow: auto;
-            }
-
-            .pf-c-select__menu li button:hover label .pf-c-badge.pf-m-read {
-                background: var(--pf-global--Color--light-100);
-            }
-
-            .ins-c-tagfilter__option-value {
-                max-width: 360px;
-            }
-        }
-    }
+.pf-v6-c-page {
+  --pf-m-emphasis--FontSize: var(--pf-t--global--font--size--xl);
 }
 
 // Page root background color
-.pf-c-page__main {
-    &#root, &#no-access {
-        background: var(--pf-c-page__main-section--BackgroundColor);
-    }
+.pf-v6-c-page__main {
+  &#root, &#no-access {
+    background: var(--pf-v6-c-page__main-section--BackgroundColor);
+  }
 }
 
-#chrome-app-render-root {
-    /* https://github.com/RedHatInsights/insights-chrome/pull/1278/files#diff-e953d69488a613b49aa81408a3595bd7161bf7547cca09d3378351b6c4552502L93
-    * 100% heing is required to have the nav and app content to fill the page height even though there is not enough content.
-    * It will be cut off witout it.
-    * We will revisit this rule after all apps have adopted chrome 2 and we have only one required layout.
-    */
-    height: 100%;
+// temp replacement for non-working PF4 variables
+.pf-c-page__main-section {
+  // padding: var(--pf-c-page__main-section--PaddingTop) var(--pf-c-page__main-section--PaddingRight) var(--pf-c-page__main-section--PaddingBottom) var(--pf-c-page__main-section--PaddingLeft);
+  padding: 24px;
+}
+.pf-c-page__main-section.pf-m-light {
+  // --pf-c-page__main-section--BackgroundColor: var(--pf-c-page__main-section--m-light--BackgroundColor);
+  --pf-c-page__main-section--BackgroundColor: #fff;
 }
 
 // Landing page logout alert
-.pf-c-alert.ins-c-alert {
-    position: absolute;
-    top: var(--pf-c-page__header--MinHeight);
-    right: var(--pf-c-page__header-tools--MarginRight);
-}
-
-// Header
-.pf-c-page__header {
-    overflow: visible;
-    .ins-c-dropdown-item__stack {
-        white-space: nowrap;
-        * { color: var(--pf-c-dropdown__menu-item--disabled--Color); }
-    }
-
-    .ins-c-dropdown-item__stack--header,
-    .ins-c-dropdown-item__stack--subValue {
-        font-size: var(--pf-global--FontSize--xs);
-    }
-
-    .ins-c-dropdown-item__stack--subValue { padding-top: var(--pf-global--spacer--xs); }
-
-    .pf-c-page__header-brand-link img { @include rem('height', 30px); }
-    .pf-c-page__header-brand-toggle svg {
-        @include rem('height', 21px);
-        @include rem('width', 21px);
-    }
-
-    .pf-c-page__header-tools .pf-c-avatar {
-        height: var(--pf-global--FontSize--4xl);
-    }
-}
-
-// Brand
-.pf-c-brand {
-    fill: #fff;
-    min-width: 200px;
-
-    @media screen and (min-width: $pf-global--breakpoint--md) {
-        width: 100%;
-        min-width: auto;
-    }
+.pf-v6-c-alert.chr-c-alert {
+  position: absolute;
+  top: var(--pf-v6-c-page__header--MinHeight);
+  right: var(--pf-v6-c-page__header-tools--MarginRight);
 }
 
 // Page sidebar
-.pf-c-page__sidebar {
-    grid-row-end: 4;
+.pf-v6-c-page__sidebar {
+  grid-row-end: 4;
 }
 
-// Page footer
-.ins-c-footer {
-    grid-column-start: 1;
+.chr-render {
+  display: flex;
+  flex-direction: column;
+  > main {
+      flex-grow: 1;
+  }
+}
 
-    @media screen and (min-width: $pf-global--breakpoint--md) {
-        grid-column-start: 2;
+/** We need some adjustments to the minimal height of the default layout with the new footer.
+* The footer is tall and during the module loading process, it create "rubber banding" effect as the loading
+* elements change during different stages. 
+*/
+@media screen and (min-width : $pf-v6-global--breakpoint--2xl) {
+  .chr-scope__default-layout {
+    // we do not have PF variables for the header height unfortunately
+    min-height: calc(100vh - 172px /** the size of the masthead on double extra large screens */);
+  }
+}
+
+
+@media screen and (min-width : $pf-v6-global--breakpoint--md) and (max-width : $pf-v6-global--breakpoint--2xl)  {
+  .chr-scope__default-layout {
+    min-height: calc(100vh - 226px /** the size of the masthead on extra large screens */);
+  };
+}
+
+@media only screen and (max-width: $pf-v6-global--breakpoint--md) {
+  .ins-m-hide-on-md {display: none;}
+
+  .chr-scope__default-layout {
+    min-height: calc(100vh - 226px /** the size of the masthead on medium screens */);
+  };
+}
+
+@media only screen and (max-width: $pf-v6-global--breakpoint--sm) {
+  .ins-m-hide-on-sm {display: none;}
+
+  .chr-scope__default-layout {
+    min-height: calc(100vh - 226px /** the size of the masthead on small screens */);
+  };
+
+  .ins-c-table-empty-state.pf-m-grid-md.pf-v6-c-table,
+  .ins-c-table-empty-state.pf-m-grid-lg.pf-v6-c-table {
+      [data-label] {
+          --pf-v6-c-table--cell--hidden-visible--Display: 0;
+      }
+      tr:first-of-type {
+          > td::before { 
+              display: none; 
+          }
+      }
+  }
+}
+
+/**
+* Cookies banner overrides
+*/
+#truste-consent-track {
+  /**
+  * has to be set because of PF page overlaps the banner
+  */
+  z-index: 19001;
+  position: fixed;
+  bottom: 0;
+  padding-left: var(--pf-t--global--spacer--xl);
+  padding-right: var(--pf-t--global--spacer--xl);
+  width: 100%;
+
+  @media only screen and (max-width: $pf-v6-global--breakpoint--lg) {
+    .truste-banner {
+      display: flex;
+      flex-direction: column;
     }
+  }
 }
 
-// Loading
-.ins-l-page__header--loading {
-    .ins-c-skeleton { @include rem('height', 28px); }
-}
 
-.ins-c-page__header-brand--loading {
-    .pf-c-button.pf-m-plain { top: 2px; }
-}
-
-section.ins-c-app-switcher--loading {
-    padding: calc(16px + var(--pf-global--spacer--sm)) 24px;
-    margin-top: 7px;
-    border-bottom: 3px solid #3c3f42;
-}
-
-.pf-m-user-skeleton {
-    .ins-c-skeleton { width: 75px; }
-    .pf-c-dropdown__toggle-icon { height: 1em; }
-}
-
-.ins-c-skeleton__link {
-    width: 100%;
-}
-
-// Pen testing
-.ins-c-pen-test {
-    border-top: 3px solid #A18FFF;
-}
-
-// PF navigation text alignment fix
-.ins-m-navigation-align {
-    .pf-c-nav__link {
-        text-align: inherit;
+// centers modals when a quick start drawer is open
+.pfext-quick-start-drawer__body {
+    .pf-v6-c-backdrop {
+      --pf-v6-c-backdrop--Position: absolute;
     }
+  }
+
+// https://github.com/patternfly/patternfly-quickstarts/issues/392
+.pfext-quick-start-task .pf-v6-c-wizard {
+  height: initial;
 }
 
-.ins-c-render {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    > main {
-        flex-grow: 1;
+// remove float from restart button so it's not obscured by pendo or the va badge
+.pfext-quick-start-footer__restartbtn {
+  float: none;
+}
+  
+// fix quickstarts drawer overflow for long quickstart/helptopic content
+#chrome-entry {
+  height: 100vh;
+}
+.chr-c-favorite-trigger {
+  cursor: pointer;
+  .pf-v6-c-icon { // AllServicesLink
+    color: var(--pf-t--global--background--color--disabled--default);
+  }
+  .pf-v6-c-button { // AllServicesGalleryLink
+     background: none;
+    .pf-v6-c-icon {
+      --pf-v6-c-icon__content--Color: var(--pf-t--global--background--color--disabled--default);
     }
+  }
 }
-
-// mobile fixes
-@media only screen and (max-width: $pf-global--breakpoint--sm) {
-    .ins-m-hide-on-sm {display: none;}
-
-    .ins-c-table-empty-state.pf-m-grid-md.pf-c-table,
-    .ins-c-table-empty-state.pf-m-grid-lg.pf-c-table {
-        [data-label] {
-            --pf-c-table--cell--hidden-visible--Display: 0;
-        }
-        tr:first-of-type {
-            > td::before { 
-                display: none; 
-            }
-        }
+.chr-c-favorite-trigger.chr-c-icon-favorited {
+  .pf-v6-c-icon {
+    --pf-v6-c-icon__content--Color: var(--pf-t--global--icon--color--favorite--default);
+  }
+}
+.chr-c-link-favorite-card { //trigger not needed here
+  .pf-v6-c-icon {
+    --pf-v6-c-icon__content--Color: var(--pf-t--global--icon--color--favorite--default);
+    &:hover {
+      --pf-v6-c-icon__content--Color: var(--pf-t--global--icon--color--favorite--hover);
+      .chr-c-icon-external-link, .chr-c-icon-external-link:hover {
+        --pf-v6-c-icon__content--Color: var(--pf-t--global--text--color--link--hover);
+      }
     }
+  }
 }
 
+.chr-render {
+  font-size: 16px !important;
+}
+
+.chr-m-plain {
+  text-decoration: none;
+}

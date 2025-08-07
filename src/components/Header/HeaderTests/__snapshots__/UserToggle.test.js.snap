@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserToggle should render user toggle 1`] = `
+<div>
+  <button
+    aria-expanded="false"
+    class="pf-v6-c-menu-toggle data-hj-suppress sentry-mask"
+    data-ouia-component-id="OUIA-Generated-MenuToggle-1"
+    data-ouia-component-type="PF6/MenuToggle"
+    data-ouia-safe="true"
+    type="button"
+  >
+    <span
+      class="pf-v6-c-menu-toggle__icon"
+    >
+      <img
+        alt="User Avatar"
+        class="pf-v6-c-avatar pf-m-sm"
+        src="test-file-stub"
+      />
+    </span>
+    <span
+      class="pf-v6-c-menu-toggle__text"
+    >
+      foo foo
+    </span>
+    <span
+      class="pf-v6-c-menu-toggle__controls"
+    >
+      <span
+        class="pf-v6-c-menu-toggle__toggle-icon"
+      >
+        <svg
+          aria-hidden="true"
+          class="pf-v6-svg"
+          fill="currentColor"
+          height="1em"
+          role="img"
+          viewBox="0 0 320 512"
+          width="1em"
+        >
+          <path
+            d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+          />
+        </svg>
+      </span>
+    </span>
+  </button>
+</div>
+`;
+
+exports[`UserToggle should render user toggle for small screens 1`] = `
+<div>
+  <button
+    aria-expanded="false"
+    class="pf-v6-c-menu-toggle pf-m-plain data-hj-suppress sentry-mask pf-v6-u-pr-lg pf-v6-u-pl-lg"
+    data-ouia-component-id="OUIA-Generated-MenuToggle-plain-1"
+    data-ouia-component-type="PF6/MenuToggle"
+    data-ouia-safe="true"
+    id="UserMenu"
+    type="button"
+    widget-type="UserMenu"
+  >
+    <span
+      class="pf-v6-c-menu-toggle__text"
+    >
+      <svg
+        aria-hidden="true"
+        class="pf-v6-svg"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        viewBox="0 0 192 512"
+        width="1em"
+      >
+        <path
+          d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"
+        />
+      </svg>
+    </span>
+  </button>
+</div>
+`;
