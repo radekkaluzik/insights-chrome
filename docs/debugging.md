@@ -10,3 +10,5 @@ There are some localStorage values for you to enable debuging information or ena
 * `remediationsDebug` - to enable debug buttons in remediations app
 * `shortSession` - to enable short session in order to test automatic logouts
 * `forcePendo` - to force Pendo initializtion
+* `segmentDev` - force usage of common segment dev API key
+* `intlDebug` - show missing translation keys
