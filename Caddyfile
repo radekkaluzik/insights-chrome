@@ -1,0 +1,40 @@
+{
+	{$CADDY_TLS_MODE}
+	auto_https disable_redirects
+}
+
+:9000 {
+	metrics /metrics
+}
+
+:8000 {
+	{$CADDY_TLS_CERT}
+	log
+	header -Vary
+	@app_match {
+		path /apps/chrome*
+	}
+	handle @app_match {
+		uri strip_prefix /apps/chrome
+		file_server * {
+			root /srv/dist
+			index /srv/dist/index.html
+			browse
+		}
+	}
+
+	# Return 404 for /apps requests that are not chrome
+	@non_chrome_apps_match {
+		path /apps*
+		not path /apps/chrome*
+	}
+	handle @non_chrome_apps_match {
+		respond "Not found" 404
+	}
+
+	handle * {
+		root * /srv/dist
+		file_server
+		try_files {path} {path}/ /index.html
+	}
+}

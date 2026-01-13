@@ -1,0 +1,99 @@
+@import '~@patternfly/patternfly/sass-utilities/scss-variables';
+
+button.pf-v6-c-button.chr-c-button-feedback {
+  svg {
+    margin-right: var(--pf-t--global--spacer--sm);
+  }
+  position: fixed;
+  z-index: 100;
+  right: -45px;
+  bottom: 150px;
+  transform: rotate(270deg);
+  color: var(--pf-t--global--icon--color--status--on-info--default);
+  background: var(--pf-t--global--color--status--info--default);
+  &:hover {
+    background: var(--pf-t--global--color--status--info--hover);
+  }
+}
+
+.chr-c-feedback-modal {
+  margin: 0;
+  padding: 0;
+
+  .pf-v6-c-content {
+    margin-bottom: var(--pf-v6-c-content--MarginBottom);
+  }
+
+  .pf-v6-c-modal-box__body {
+    padding: 0;
+    margin: 0;
+  }
+  .pf-v6-c-modal-box > .pf-v6-c-button + *{
+    margin-right: 0;
+  }
+  & .pf-v6-c-modal-box__body {
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.chr-c-feedback {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.chr-c-feedback-content {
+  display: flex;
+  flex-direction: column;
+  padding-right: var(--pf-t--global--spacer--lg);
+  padding-top: var(--pf-t--global--spacer--lg);
+  margin: var(--pf-t--global--spacer--md);
+}
+
+.chr-c-feedback-button {
+  margin: var(--pf-t--global--spacer--sm);
+  text-align: left;
+}
+
+.chr-c-feedback-footer-button {
+  margin: var(--pf-t--global--spacer--md);
+}
+
+.chr-c-feedback-buttons {
+  margin: var(--pf-t--global--spacer--sm);
+  position: absolute;
+  bottom: var(--pf-t--global--spacer--md);
+}
+
+.chr-c-feedback-success-content {
+  margin-top: 150px;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.chr-c-feedback-email {
+  margin-top: var(--pf-t--global--spacer--lg);
+  overflow: hidden;
+}
+
+.chr-c-feedback-panel {
+  margin-bottom: var(--pf-t--global--spacer--lg);
+  &__body {
+    padding-bottom: 4px;
+    padding-top: 4px;
+    border-bottom: 1px solid var(--pf-t--global--border--color--default);
+  }
+}
+
+@media (max-height: $pf-v6-global--breakpoint--sm), (max-width: $pf-v6-global--breakpoint--md) {
+  .chr-c-feedback-buttons {
+    margin-top: var(--pf-t--global--spacer--md);
+    position: static;
+    bottom: auto;
+  }
+}
