@@ -1,0 +1,34 @@
+.chr-viewing-as {
+  left: 0;
+  top: 76px;
+  width: 100%;
+  font-size: 10px;
+  background-color: var(--pf-t--global--color--nonstatus--blue--default);
+  color: var(--pf-t--global--text--color--nonstatus--on-blue--default);
+  opacity: 1;
+  grid-area: banner;
+}
+
+.pf-v6-c-page.chr-c-page__account-banner {
+  grid-template-areas:
+    "header header"
+    "banner banner"
+    "nav main";
+  grid-template-rows: max-content max-content 1fr;
+}
+
+@media screen and (max-width: 1200px) {
+  .pf-v6-c-page.chr-c-page__account-banner {
+    grid-template-areas:
+      "header header"
+      "main main";
+  }
+}
+
+
+.pf-v6-c-page__drawer {
+  .pf-v6-c-drawer__content {
+    background-color: transparent;
+  }
+}
+

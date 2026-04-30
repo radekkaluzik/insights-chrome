@@ -1,5 +1,8 @@
 build/
+dist/
 node_modules/
+public/
+tmp/
 
 #emacs
 *[#]*[#]
@@ -21,3 +24,46 @@ Session.vim
 .idea/
 .vscode/
 coverage/
+.nyc_output
+cypress-coverage
+.yalc
+yalc.lock
+
+# cypress diff snapshots
+cypress/**/*.diff.png
+cypress/videos
+cypress/screenshots
+cypress/downloads
+
+# cache
+.cache
+.webpack-cache
+.cypress-cache
+.sass-cache
+
+#swc
+.swc
+.cypress_cache
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/.playwright-mcp
+
+.mcp.json
+
+# Environment variables
+.env
+.env.local
+
+
+.hypothesis
+
+# Local dev TLS certs (mkcert)
+*.pem

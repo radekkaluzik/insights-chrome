@@ -4,171 +4,306 @@ The "wrapper" around your application!
 
 Insights Chrome provides:
 
-- Standard header and navigation
+- Standard header and [navigation](https://github.com/redhatinsights/insights-chrome/tree/master/docs/navigation.md)
 - Base CSS/style
-- A JavaScript library for interacting with Insights Chrome
+- A Javascript library for interacting with Insights Chrome
 
 For more detailed information about chrome and what it provides, [look through the detailed documentation](https://github.com/redhatinsights/insights-chrome/tree/master/docs).
 
-## Beta usage
+## JavaScript API
 
-You can include/use chrome in your development project by running the [insights-proxy](https://github.com/RedHatInsights/insights-proxy) in front of your application and using the following HTML template.
+Insights Chrome comes with a Javascript API that allows applications to control navigation, global filters, etc.
 
-```html
-<!doctype html>
-<html>
-  <head>
-    <!-- your own HEAD tags -->
-    <esi:include src="/@@env/chrome/snippets/head.html" />
-  </head>
-  <body>
-    <esi:include src="/@@env/chrome/snippets/body.html"/>
-  </body>
-</html>
-```
-
-Then, render your application to the "root" element. With React, for instance:
-
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
-import getBaseName from './Utilities/getBaseName';
-
-ReactDOM.render(
-    <Router basename={ getBaseName(window.location.pathname) }>
-        <App />
-    </Router>,
-
-    document.getElementById('root')
-);
-```
-
-## Javascript API
-
-Insights Chrome comes with a Javacript API that allows applications to control navigation, global filters, etc.
-
-```js
-    // initialize chrome
-    insights.chrome.init();
-
-    // identify yourself (the application). This tells Chrome which global navigation element should be active
-    insights.chrome.identifyApp('advisor');
-```
+Check out the [useChrome hook docs](http://front-end-docs-insights.apps.ocp4.prod.psi.redhat.com/chrome/chrome-api#Chrome)
 
 ## Running the build
 
-There is numerous of task for building this application. You can run individual tasks or run them in batch to build the
-entire app or to watch files.
+There are a few scripts for building this application.
 
-### Individual tasks
+To run a script you have to install dependencies `npm install`. Then you are free to use any task you want.
 
-To run each task you have to first install dependencies `npm install` and then you are free to use any task as you wish.
-If you want to watch file changes for each build just pass `-- -w` to specific task (this is not applicable to
-`npm run build:js:watch` because it's somewhat specific).
+1. Building assets
 
-1. Building of styles
+```sh
+npm run build
+```
 
-    ```bash
-    > npm run build:sass
-    ```
+2. Building assets and watching files when they change
 
-2. Building of javascripts
+```sh
+npm run build --watch
+```
 
-    ```bash
-    > npm run build:js
-    ```
+3. Running tests
 
-3. Building of javascripts and watching files when they change
+```sh
+# Unit tests (Jest)
+npm run test
 
-    ```bash
-    > npm run watch:js
-    ```
+# Component tests (Cypress)
+npm run test:ct
+```
 
-4. Building of HTML partials
+4. Running E2E tests
 
-    ```bash
-    > npm run build:pug
-    ```
+E2E tests require a running dev server and a stage test account (create one via [Ethel](https://account-manager-stage.app.eng.rdu2.redhat.com/#create)).
 
-5. Running tests
+```sh
+# Start the dev server first
+npm run dev
 
-    ```bash
-    > npm run test
-    ```
+# Cypress (interactive)
+E2E_USER=<username> E2E_PASSWORD="<password>" npx cypress open --e2e
 
-### Specific tasks
+# Cypress (headless)
+E2E_USER=<username> E2E_PASSWORD="<password>" npx cypress run --e2e
 
-1. Run build of whole application just once
+# Cypress (single spec — spec.cy.ts must run first to create the login session)
+E2E_USER=<username> E2E_PASSWORD="<password>" npx cypress run --e2e --spec cypress/e2e/spec.cy.ts,cypress/e2e/ephemeral/init-flow.cy.ts
 
-    ```bash
-    > npm run build
-    ```
+# Playwright
+E2E_USER=<username> E2E_PASSWORD="<password>" npx playwright test
+```
 
-2. Watching file changes and trigger build every time something changes
+The CI wrapper starts its own dev server — don't run with a dev server already running:
 
-    ```bash
-    > npm run start
-    ```
+```sh
+CHROME_ACCOUNT=<username> CHROME_PASSWORD="<password>" npm run ci:cypress-e2e-tests
+```
 
 ## Running chrome locally
 
+**Prerequisites:**
+- **Red Hat VPN:** Required for proxy access to `console.stage.redhat.com`
+- **Staging account:** Authentication requires a staging environment user. Create one at [ethel.rhsm.redhat.com](https://ethel.rhsm.redhat.com/)
+
 1. Install all dependencies
 
-    ```bash
-    > npm install
-    ```
+```sh
+npm install
+```
 
-2. Run build command in watch mode
+2. Run dev command in watch mode
 
-    ```bash
-    > npm run watch
-    ```
+```sh
+npm run dev
+```
 
-3. Open new terminal, navigate to build directory
+3. Open browser at [stage.foo.redhat.com:1337](https://stage.foo.redhat.com:1337).
 
-    ```bash
-    cd ./build
-    ```
+> **Note:** Firefox is recommended for local development. It handles the dev server's
+> self-signed certificate without issues. Chrome users may encounter `ERR_TOO_MANY_RETRIES`
+> errors — see [Local Development SSL Setup](#local-development-ssl-setup) below for a fix.
 
-4. Run the proxy
+### Local Development SSL Setup
 
-    ```bash
-    SPANDX_CONFIG={path-to-app}/profiles/local-frontend.js \
-    LOCAL_CHROME=true \
-    bash {path-to-insights-proxy}/scripts/run.sh
-    ```
+The dev server at `https://stage.foo.redhat.com:1337` uses a self-signed certificate by default.
+**Firefox** handles self-signed certificates gracefully and works without additional setup.
 
-Where `SPANDX_CONFIG` can be any config for your application (here is an example for [insights-frontend-starter-app](https://github.com/RedHatInsights/insights-frontend-starter-app)), just make sure your application is running `npm start` in said application.
+**Chrome** users may encounter `ERR_TOO_MANY_RETRIES` errors when loading webpack chunks due to
+SSL handshake failures with self-signed certificates. To fix this, generate a locally-trusted
+certificate using [mkcert](https://github.com/FiloSottile/mkcert):
 
-After permorming these tasks you can access `ci.foo.redhat.com:1337/{bundle}/{app}`, where bundle and app are defined in your `local-frontend.js` and observe changes as you save them.
+1. Install mkcert following the [official installation guide](https://github.com/FiloSottile/mkcert#installation).
 
-### Shape of SPANDX_CONFIG
+2. Install the local CA (one-time setup):
 
-You can have custom spandx config with all frontend apps specified if you want to, the `.js` file just have to export `routes` object with at least 2 paths
+   ```sh
+   mkcert -install
+   ```
 
-`Example local-frontend.js file` (aka spandx config)
+3. Generate the certificate in the repo root:
+
+   ```sh
+   cd /path/to/insights-chrome
+   mkcert -cert-file stage.foo.redhat.com.pem -key-file stage.foo.redhat.com-key.pem stage.foo.redhat.com
+   ```
+
+**Security note:** mkcert creates a local Certificate Authority trusted by your browser.
+Keep your machine secure — if malware accesses the CA key (`~/.local/share/mkcert/`),
+it could intercept HTTPS traffic. Remove with `mkcert -uninstall` when not needed.
+
+The webpack config checks for these `.pem` files at startup. If you generate or renew them while the dev server is running, restart it to pick up the new certificates. The `.pem` files are gitignored.
+
+### Troubleshooting
+
+**`[HPM] Error occurred while proxying request ... [ENOTFOUND]`**
+
+This means you're not connected to the Red Hat VPN. The dev server proxies to `console.stage.redhat.com`,
+which is only accessible on the internal network. Connect to VPN and restart the dev server.
+
+**`ERR_CERT_DATE_INVALID` or certificate expired errors**
+
+The mkcert certificate has expired (valid for ~2 years from generation). Regenerate it:
+
+```sh
+mkcert -cert-file stage.foo.redhat.com.pem -key-file stage.foo.redhat.com-key.pem stage.foo.redhat.com
+```
+
+Then restart the dev server.
+
+## Running chrome with other applications locally
+
+### From app terminal
+
+The following example will make use of the [frontend-starter-app](https://github.com/RedHatInsights/frontend-starter-app/). 
+
+The [frontend-starter-app README](https://github.com/RedHatInsights/frontend-starter-app/#readme) explains how to install, build and run the app. To inject the `frontend-starter-app` into chrome, start by serving its static assets locally using the `npm run static` command. 
+
+When visiting [localhost:8003/apps/frontend-starter-app](http://localhost:8003/apps/frontend-starter-app/) in a browser, you should see a listing of its files. The `baseURL` field in [fed-mods.json](http://localhost:8003/apps/frontend-starter-app/fed-mods.json) contains the path where the static assets can be accessed.  
+
+### From chrome terminal
+
+There are two ways to configure chrome to display your local app. 
+
+#### 1. `LOCAL_APPS` environment variable
+
+```sh
+LOCAL_APPS=frontend-starter-app:8003 
+npm run dev
+```
+
+`frontend-starter-app` is the path segment after `/apps` defined in [fed-mods.json](http://localhost:8003/apps/frontend-starter-app/fed-mods.json).
+
+Use a browser, to visit [/staging/starter](https://stage.foo.redhat.com:1337/staging/starter) in chrome to access `frontend-starter-app`.
+
+`/staging/starter` is defined in [frontend-starter-app/deploy/frontend.yaml](https://github.com/RedHatInsights/frontend-starter-app/blob/master/deploy/frontend.yaml).
+
+Behind the scenes chrome is parsing the `LOCAL_APPS` env var and creating the following route:
 
 ```js
-/*global module*/
-
-const SECTION = 'insights';
-const APP_ID = 'starter';
-const FRONTEND_PORT = 8002;
-const routes = {};
-
-routes[`/beta/${SECTION}/${APP_ID}`] = { host: `https://localhost:${FRONTEND_PORT}` };
-routes[`/${SECTION}/${APP_ID}`]      = { host: `https://localhost:${FRONTEND_PORT}` };
-routes[`/beta/apps/${APP_ID}`]       = { host: `https://localhost:${FRONTEND_PORT}` };
-routes[`/apps/${APP_ID}`]            = { host: `https://localhost:${FRONTEND_PORT}` };
-
-module.exports = { routes };
+{
+  "/apps/frontend-starter-app": {
+    host: "http://localhost:8003"
+  }
+}
 ```
+which is further manipulated and turned into a [Webpack devServer.proxy config item](https://webpack.js.org/configuration/dev-server/#devserverproxy)
+
+```js
+{
+  context: (path: string) => path.includes("/apps/frontend-starter-app"),
+  target: "http://localhost:8003",
+}
+```
+
+The `LOCAL_APPS` environment variable supports multiple apps and protocols using the following pattern `name:port[~protocol]`, where:
+
+- `name`: The application name (path segment after `/apps`)
+- `port`: The port number where your local app is running
+- `protocol` (optional): `http` (default) or `https`
+
+For example:
+
+```sh
+# Multiple apps
+LOCAL_APPS=app1:8003,app2:8004,app3:8005
+
+# Custom protocol  
+LOCAL_APPS=secure-app:8443~https
+
+# Mixed
+LOCAL_APPS=app1:8003,secure-app:8443~https,app3:8005~http
+```
+
+#### 2. Custom route
+
+Edit [config/webpack.config.js](config/webpack.config.js) and add the following to the `routes` field of the config object passed to the `proxy` function. 
+
+```js
+{
+  "/apps/frontend-starter-app": "http://localhost:8003"
+}
+```
+
+Start the dev server.
+
+```sh
+npm run dev
+```
+
+Use browser to visit [/staging/starter](https://stage.foo.redhat.com:1337/staging/starter) in chrome to access the `frontend-starter-app`.
+
+Note: The `proxy` function is defined in [frontend-components/packages/config-utils/src/proxy.ts](https://github.com/RedHatInsights/frontend-components/blob/master/packages/config-utils/src/proxy.ts).
+
+## Local Search Feature
+
+The Insights Chrome platform provides a local search functionality that allows applications to search through various types of content including services, quickstarts, and custom content types.
+
+### Using the Search API
+
+Applications can use the search functionality through the Chrome API:
+
+```javascript
+// Search for services (default)
+const serviceResults = await chrome.search.query('insights', 'services');
+
+// Search for quickstarts
+const quickstartResults = await chrome.search.query('getting started', 'quickstarts');
+
+// Search for custom content types
+const customResults = await chrome.search.query('term', 'documentation');
+```
+
+### Adding Custom Search Content
+
+Applications can register their own searchable content:
+
+```javascript
+// Register a new search entry
+await chrome.search.insert({
+  id: 'my-custom-entry',
+  title: 'Custom Documentation', 
+  description: 'Helpful documentation for users',
+  pathname: '/my-app/docs',
+  bundleTitle: 'My Application',
+  type: 'documentation' // Custom type
+});
+```
+
+### Supported Search Types
+
+- **services**: Application services and tools (predefined)
+- **quickstarts**: Interactive getting-started guides (predefined) 
+- **custom types**: Applications can define their own search categories
+
+### Using Search as a Remote Hook
+
+Applications can also consume the search functionality using Module Federation via `@scalprum/react-core`:
+
+```javascript
+import { useRemoteHook } from '@scalprum/react-core';
+
+function MyComponent() {
+  const { hookResult, loading, error } = useRemoteHook({
+    scope: 'chrome',
+    module: './search/useSearch'
+  });
+
+  const handleSearch = async () => {
+    if (!hookResult) return;
+    const results = await hookResult.query('kubernetes', 'services');
+    // Process results...
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading search</div>;
+
+  return (
+    // Your component JSX
+  );
+}
+```
+
+This approach allows applications to use search functionality without directly depending on the `useChrome` hook. See the [search hook documentation](./docs/searchHook.md) for detailed usage examples.
+
+### Local Search Development
+
+See [local search development documentation](./docs/localSearchDevelopment.md) for implementation details.
 
 ## LocalStorage Debugging
 
-There are some localStorage values for you to enable debuging information or enable some values that are in experimental state. If you want to enable them call `const iqe = insights.chrome.enable.iqe()` for instance to enable such service. This function will return callback to disable such feature so calling `iqe()` will remove such item from localStorage.
+There are some localStorage values for you to enable debugging information or enable some values that are in experimental state. If you want to enable them call `const iqe = insights.chrome.enable.iqe()` for instance to enable such service. This function will return callback to disable such feature so calling `iqe()` will remove such item from localStorage.
 
 Available function:
 
@@ -177,9 +312,24 @@ Available function:
 - `jwtDebug` - to enable debugging of JWT
 - `remediationsDebug` - to enable debug buttons in remediations app
 - `shortSession` - to enable short session in order to test automatic logouts
-- `forcePendo` - to force Pendo initializtion
+- `forcePendo` - to force Pendo initialization
 - `appFilter` - to enable new application filter in any environment
 
-## Futher reading
+## Further reading
 
 More detailed documentation can be found in the [docs section](https://github.com/redhatinsights/insights-chrome/tree/master/docs)
+
+## Staleness
+
+A bot will post a comment after 60 days of inactivity giving the opener 5 days to update their issue/PR before it's closed.
+
+If you want the bot to ignore your issue or PR, please add one of the following labels:
+
+- work-in-progress
+- in-progress
+- in-review
+- help-wanted
+- blocked
+- wip
+- dependencies
+

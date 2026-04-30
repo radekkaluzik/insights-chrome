@@ -1,0 +1,140 @@
+import omit from 'lodash/omit';
+import flatMap from 'lodash/flatMap';
+import memoize from 'lodash/memoize';
+
+import { FlagTagsFilter, GroupItem } from '../../@types/types';
+import { getUrl } from '../../hooks/useBundle';
+
+export const AAP_KEY = 'Ansible Automation Platform';
+export const MSSQL_KEY = 'Microsoft SQL';
+
+export const INVENTORY_API_BASE = '/api/inventory/v1';
+export const workloads = [
+  {
+    name: 'Workloads',
+    noFilter: true,
+    tags: [
+      {
+        tag: { key: 'SAP' },
+      },
+      {
+        tag: { key: AAP_KEY },
+      },
+      {
+        tag: { key: MSSQL_KEY },
+      },
+    ],
+  },
+];
+
+export type UpdateSelected = (
+  original: FlagTagsFilter,
+  namespace: string,
+  key: string,
+  value: string | undefined,
+  isSelected: boolean,
+  extra: Record<string, { tagKey?: string }>
+) => FlagTagsFilter;
+
+export const updateSelected: UpdateSelected = (original, namespace, key, value, isSelected, extra) => ({
+  ...original,
+  [namespace]: {
+    ...original?.[namespace],
+    [key]: {
+      ...(original?.[namespace]?.[key] as GroupItem),
+      isSelected,
+      value,
+      ...extra,
+    },
+  },
+});
+
+export const createTagsFilter = (tags: string[] = []) =>
+  tags.reduce<
+    Record<string, Record<string, { isSelected?: boolean; item: { tagValue: string; tagKey: string; group?: { value: string; label: string; type: string } } }>>
+  >((acc, curr) => {
+    const [namespace, tag] = curr.split('/');
+    const [tagKey, tagValue] = tag?.split('=') || [];
+    return {
+      ...acc,
+      [namespace]: {
+        ...(acc[namespace] || {}),
+        ...(tagKey?.length > 0 && {
+          [`${tagKey}${tagValue ? `=${tagValue}` : ''}`]: {
+            isSelected: true,
+            group: { value: namespace, label: namespace, type: 'checkbox' },
+            item: { tagValue, tagKey },
+          },
+        }),
+      },
+    };
+  }, {});
+
+export const generateFilter = () => {
+  const searchParams = new URLSearchParams(location.hash?.substring(1));
+
+  // Ansible bundle requires AAP to be active at all times
+  if (getUrl('bundle') === 'ansible') {
+    searchParams.set('workloads', AAP_KEY);
+  }
+
+  let Workloads = {};
+  let tags = {};
+
+  if (searchParams.get('workloads')) {
+    const { tag } = workloads[0].tags.find(({ tag: { key } }) => key === searchParams.get('workloads')) || {};
+    Workloads = tag?.key
+      ? {
+          [tag?.key]: {
+            group: omit(workloads[0], 'tags'),
+            isSelected: true,
+            item: { tagKey: tag?.key },
+          },
+        }
+      : {};
+  }
+
+  if (typeof searchParams.get('tags') === 'string') {
+    tags = createTagsFilter(searchParams.get('tags')?.split(','));
+  }
+
+  return {
+    Workloads,
+    ...tags,
+  };
+};
+
+export const escaper = (value: string) => value.replace(/\//gi, '%2F').replace(/=/gi, '%3D');
+
+export const flatTags = memoize(
+  (filter: FlagTagsFilter = {}, encode = false, format = false, raw?: boolean) => {
+    const { Workloads, ...tags } = filter;
+    // When format=true and encode=false, default to raw so consumers (e.g. inventory API) get
+    // namespace/key=value format and can encode once. Escaped format would be double-encoded.
+    const useRaw = raw ?? (format && !encode);
+    const escape = (v: string) => (useRaw ? v : escaper(v));
+    const mappedTags = flatMap(Object.entries({ ...tags, ...(!format && { Workloads }) }), ([namespace, item]) =>
+      Object.entries<any>(item || {})
+        .filter(([, entry]) => entry != null && typeof entry === 'object' && (entry as GroupItem).isSelected === true)
+        .map(([tagKey, { item, value: tagValue }]: [any, GroupItem & { value: string }]) => {
+          return `${namespace ? `${encode ? encodeURIComponent(escape(namespace)) : escape(namespace)}/` : ''}${
+            encode ? encodeURIComponent(escape(item?.tagKey || tagKey)) : escape(item?.tagKey || tagKey)
+          }${item?.tagValue || tagValue ? `=${encode ? encodeURIComponent(escape(item?.tagValue || tagValue)) : escape(item?.tagValue || tagValue)}` : ''}`;
+        })
+    );
+    // Return 3 items when format=true: [workloads, SIDs, tags]
+    // SIDs is always empty array since sap_sids filter was removed from global filter
+    // This ensures tags go to the tags parameter
+    return format ? [Workloads, [], mappedTags] : mappedTags;
+  },
+  (filter = {}, encode, format, raw) =>
+    `${Object.entries(filter)
+      .map(
+        ([namespace, val]) =>
+          `${namespace}.${Object.entries<any>(val || {})
+            .filter(([, entry]) => entry != null && typeof entry === 'object' && (entry as GroupItem).isSelected)
+            .map(([key]) => key)
+            .join('')}`
+      )
+      .join(',')}${encode ? '_encode' : ''}${format ? '_format' : ''}${(raw ?? (format && !encode)) ? '_raw' : ''}`
+);

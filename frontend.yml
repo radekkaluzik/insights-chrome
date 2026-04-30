@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/RedHatInsights/frontend-components/refs/heads/master/packages/config-utils/src/feo/spec/frontend-crd.schema.json
+
+apiVersion: v1
+kind: Template
+metadata:
+  name: insights-chrome
+objects:
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: Frontend
+    metadata:
+      name: chrome
+    spec:
+      envName: ${ENV_NAME}
+      deploymentRepo: https://github.com/RedHatInsights/insights-chrome
+      title: Chrome
+      image: ${IMAGE}:${IMAGE_TAG}
+      API:
+        versions:
+          - v1
+      module:
+        manifestLocation: "/apps/chrome/js/fed-mods.json"
+        config:
+          ssoUrl: ${SSO_URL}
+        modules:
+          - id: 'satellite-token'
+            module: './SatelliteToken'
+            routes:
+              - pathname: /insights/satellite
+      frontend:
+        paths:
+          - /
+      akamaiCacheBustPaths:
+        # / should not be cached whatsoever
+        - /
+        - /config/chrome/fed-modules.json
+        - /apps/chrome/index.html
+        - /apps/chrome/js/fed-mods.json
+parameters:
+  - name: ENV_NAME
+    required: true
+  - name: IMAGE_TAG
+    required: true
+  - name: SSO_URL
+    required: true
+  - name: IMAGE
+    value: quay.io/redhat-services-prod/hcc-platex-services-tenant/insights-chrome
